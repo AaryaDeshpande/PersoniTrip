@@ -22,6 +22,7 @@ class WelcomeActivity : AppCompatActivity() {
         Handler().postDelayed({
             checkLocationPermission()
         }, SPLASH_DISPLAY_LENGTH.toLong())
+
     }
 
     // Check if location permission is granted, if not, request it
@@ -39,7 +40,7 @@ class WelcomeActivity : AppCompatActivity() {
             )
         } else {
             // Permission already granted, proceed to main activity
-            proceedToMainActivity()
+            proceedToQuizActivity()
         }
     }
 
@@ -53,17 +54,24 @@ class WelcomeActivity : AppCompatActivity() {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission granted, proceed to main activity
-                proceedToMainActivity()
+                proceedToQuizActivity()
             } else {
                 // Permission denied, handle accordingly or proceed without location
-                proceedToMainActivity()
+                proceedToQuizActivity()
             }
         }
     }
 
-    private fun proceedToMainActivity() {
-        val mainIntent = Intent(this, MainActivity::class.java)
-        startActivity(mainIntent)
+    // This will start the PersonalityQuizActivity with quiz cards
+    private fun proceedToQuizActivity() {
+        val quizIntent = Intent(this, PersonalityQuizActivity::class.java)
+        startActivity(quizIntent)
         finish()
     }
+
+//    private fun proceedToMainActivity() {
+//        val mainIntent = Intent(this, MainActivity::class.java)
+//        startActivity(mainIntent)
+//        finish()
+//    }
 }
