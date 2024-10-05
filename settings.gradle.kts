@@ -9,6 +9,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven { setUrl("https://jitpack.io") } // Added JitPack repository
     }
 }
 dependencyResolutionManagement {
@@ -16,6 +17,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { setUrl("https://jitpack.io") } // Added JitPack repository
+        maven { setUrl("https://perimeterx.jfrog.io/artifactory/px-Android-SDK/") } // Added JFrog repository
     }
 }
 

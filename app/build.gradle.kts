@@ -33,6 +33,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -45,4 +49,13 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // Add RecyclerView
+    implementation(libs.androidx.recyclerview)
+
+    // Add ViewBinding
+    implementation(libs.androidx.viewbinding)
+
+    // Add CardStackView for swipe functionality
+    //implementation(libs.card.stack.view)
+    implementation(libs.cardstackview)
 }
