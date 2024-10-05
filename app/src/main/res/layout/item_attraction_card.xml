@@ -3,19 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/rounded_card_background"
+    android:layout_marginBottom="12dp">
 
+    <!-- Image on the Card -->
     <ImageView
         android:id="@+id/attraction_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop" />
 
+    <!-- Title Text on the Card -->
     <TextView
         android:id="@+id/attraction_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Attraction Title"
-        android:textSize="18sp"
-        android:paddingTop="8dp" />
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:paddingTop="8dp"
+        android:gravity="center"
+        android:layout_gravity="center" />
 </LinearLayout>
