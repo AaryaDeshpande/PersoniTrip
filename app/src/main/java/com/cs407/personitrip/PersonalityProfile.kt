@@ -1,4 +1,6 @@
+// PersonalityProfile.kt
 package com.cs407.personitrip
 
-class PersonalityProfile {
-}
+data class PersonalityProfile(
+    val userPreferences: List<String>
+)

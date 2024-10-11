@@ -24,10 +24,14 @@ class PersonalityQuizActivity : AppCompatActivity() {
         manager = CardStackLayoutManager(this, object : CardStackListener {
             override fun onCardDragging(direction: Direction?, ratio: Float) {}
 
-            override fun onCardSwiped(direction: Direction?) {
+            override fun onCardSwiped(direction: Direction) {
                 val topAttraction = adapter.getTopAttraction()
                 if (direction == Direction.Right) {
-                    userPreferences.add(topAttraction.name) // Add liked attractions
+                    // User liked this attraction
+                    userPreferences.add(topAttraction.name)
+                } else if (direction == Direction.Left) {
+                    // User disliked this attraction
+                    userPreferences.remove(topAttraction.name) // or track dislikes separately
                 }
             }
 
