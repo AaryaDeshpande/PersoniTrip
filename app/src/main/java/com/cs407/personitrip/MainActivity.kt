@@ -2,13 +2,15 @@ package com.cs407.personitrip
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -19,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE = 1001 // Code to identify location permission request.
     private lateinit var userPreferences: Set<String> // Set to store user's liked preferences.
     private lateinit var userDislikes: Set<String> // Set to store user's disliked preferences.
+    private lateinit var fusedLocationClient: FusedLocationProviderClient // Client to get current location
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,6 +29,9 @@ class MainActivity : AppCompatActivity() {
 
         // Load preferences from SharedPreferences
         loadPreferencesFromSharedPrefs()
+
+        // Initialize the fused location provider client
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         // Check if location permission is granted, and request it if not.
         checkLocationPermission()
@@ -53,7 +59,37 @@ class MainActivity : AppCompatActivity() {
             )
         } else {
             // Fetch nearby attractions if permission is granted.
-            fetchNearbyAttractions()
+            getCurrentLocation()
+        }
+    }
+
+    // Get the current location of the user
+    private fun getCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                fetchNearbyAttractions(location.latitude, location.longitude)
+            } else {
+                Toast.makeText(this, "Unable to fetch location", Toast.LENGTH_SHORT).show()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(this, "Failed to get location", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -67,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // If permission granted, fetch nearby attractions.
-                fetchNearbyAttractions()
+                getCurrentLocation()
             } else {
                 // Notify user if permission is denied.
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
@@ -76,10 +112,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     // Fetch nearby attractions using the Google Places API.
-    private fun fetchNearbyAttractions() {
-        val latitude = "43.0731" // Placeholder latitude value
-        val longitude = "-89.4012" // Placeholder longitude value
-        val apiKey = "AIzaSyANayAhfHcxjm34EIT8rwgHazhrzZxxRls" // Google Places API key
+    private fun fetchNearbyAttractions(latitude: Double, longitude: Double) {
+        val apiKey = "AIzaSyANayAhfHcxjm34EIT8rwgHazhrzZxxRls" // Replace with your Google Places API key
         val urlStr =
             "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=1500&type=tourist_attraction&key=$apiKey"
 
@@ -133,9 +167,13 @@ class MainActivity : AppCompatActivity() {
 
     // Display the filtered attractions in a card-based layout.
     private fun displayAttractionsInCards(attractions: List<AttractionCategory>) {
-        // Start the PersonalityQuizActivity with the filtered attractions.
-        val quizIntent = Intent(this, PersonalityQuizActivity::class.java)
-        quizIntent.putParcelableArrayListExtra("filtered_attractions", ArrayList(attractions))
-        startActivity(quizIntent)
+        // Here, display the attractions in your main activity UI.
+        // You might use a RecyclerView or another card-based layout instead of launching a new activity.
+        if (attractions.isNotEmpty()) {
+            // Code to populate a RecyclerView or CardView goes here
+            // Example: recyclerView.adapter = AttractionAdapter(attractions)
+        } else {
+            Toast.makeText(this, "No attractions match your preferences", Toast.LENGTH_SHORT).show()
+        }
     }
 }
