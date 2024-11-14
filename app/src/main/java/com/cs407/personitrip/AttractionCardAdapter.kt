@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cs407.personitrip.databinding.ItemAttractionCardBinding
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 
 // Adapter to manage and display attraction cards in a RecyclerView.
 class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
@@ -36,5 +37,13 @@ class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
     override fun getItemCount(): Int = attractions.size
 
     // Method to get the top attraction card, useful for swiping logic.
-    fun getTopAttraction(): AttractionCategory = attractions[0]
+    // AttractionCardAdapter.kt
+    fun getTopAttraction(manager: CardStackLayoutManager): AttractionCategory {
+        return attractions[manager.topPosition] // Use manager's topPosition to get the current top card
+    }
+
+    // AttractionCardAdapter.kt
+    fun getAttractionAt(position: Int): AttractionCategory {
+        return attractions[position] // Return the card at the given position
+    }
 }

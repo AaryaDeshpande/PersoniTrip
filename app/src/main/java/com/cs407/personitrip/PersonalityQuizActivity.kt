@@ -1,5 +1,6 @@
 package com.cs407.personitrip
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -14,6 +15,7 @@ class PersonalityQuizActivity : AppCompatActivity() {
     private lateinit var manager: CardStackLayoutManager // Manages the layout of card stack.
     private lateinit var adapter: AttractionCardAdapter // Adapter to bind the attractions to the card stack.
     private val userPreferences = mutableListOf<String>() // List to store user's liked attractions.
+    private val userDislikes = mutableListOf<String>() // List to store user's disliked attractions.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +29,20 @@ class PersonalityQuizActivity : AppCompatActivity() {
             override fun onCardDragging(direction: Direction?, ratio: Float) {}
 
             override fun onCardSwiped(direction: Direction) {
-                val topAttraction = adapter.getTopAttraction()
+                val swipedAttraction = adapter.getAttractionAt(manager.topPosition - 1) // Use position of the swiped card
+
                 if (direction == Direction.Right) {
                     // User swiped right (liked the attraction).
-                    userPreferences.add(topAttraction.name)
+                    userPreferences.add(swipedAttraction.name)
+                } else if (direction == Direction.Left) {
+                    // User swiped left (disliked the attraction).
+                    userDislikes.add(swipedAttraction.name)
+                }
+
+                // Check if this was the last card
+                if (manager.topPosition == adapter.itemCount) { // Last card check
+                    savePreferencesToSharedPrefs() // Save preferences
+                    fetchNearbyAttractions() // Move to MainActivity
                 }
             }
 
@@ -67,13 +79,22 @@ class PersonalityQuizActivity : AppCompatActivity() {
     // Move to MainActivity to fetch nearby attractions after user swipes through cards.
     override fun onDestroy() {
         super.onDestroy()
-        fetchNearbyAttractions()
+        savePreferencesToSharedPrefs() // Save likes/dislikes to SharedPreferences
+        fetchNearbyAttractions() // Proceed to the main screen
+    }
+
+    // Function to save preferences to SharedPreferences.
+    private fun savePreferencesToSharedPrefs() {
+        val sharedPrefs = getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPrefs.edit()
+        editor.putStringSet("userPreferences", userPreferences.toSet()) // Save liked categories
+        editor.putStringSet("userDislikes", userDislikes.toSet()) // Save disliked categories
+        editor.apply() // Commit the changes
     }
 
     // Function to fetch nearby attractions after swiping.
     private fun fetchNearbyAttractions() {
         val mainIntent = Intent(this, MainActivity::class.java)
-        mainIntent.putStringArrayListExtra("userPreferences", ArrayList(userPreferences))
         startActivity(mainIntent)
     }
 }
