@@ -1,2 +1,3 @@
 this is a test file to test git commits
 line 2
+line 3
