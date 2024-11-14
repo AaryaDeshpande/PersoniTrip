@@ -5,8 +5,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.view.MenuInflater
+import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -27,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Initialize settings button with dropdown functionality
+        val settingsButton = findViewById<ImageButton>(R.id.settings_button)
+        settingsButton.setOnClickListener { showSettingsMenu(it) }
+
         // Load preferences from SharedPreferences
         loadPreferencesFromSharedPrefs()
 
@@ -35,6 +43,35 @@ class MainActivity : AppCompatActivity() {
 
         // Check if location permission is granted, and request it if not.
         checkLocationPermission()
+    }
+
+    // Function to show the dropdown menu
+    private fun showSettingsMenu(view: View) {
+        val popup = PopupMenu(this, view)
+        val inflater: MenuInflater = popup.menuInflater
+        inflater.inflate(R.menu.settings_menu, popup.menu) // Create a settings_menu.xml file for this
+
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menu_city -> {
+                    // Open activity or fragment to edit city
+                    Toast.makeText(this, "Edit City selected", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.menu_personality -> {
+                    // Open activity or fragment to edit personality preferences
+                    Toast.makeText(this, "Edit Personality Preferences selected", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                R.id.menu_saved -> {
+                    // Open activity or fragment to view saved itinerary
+                    Toast.makeText(this, "View Saved Itinerary selected", Toast.LENGTH_SHORT).show()
+                    true
+                }
+                else -> false
+            }
+        }
+        popup.show()
     }
 
     // Function to load preferences from SharedPreferences.

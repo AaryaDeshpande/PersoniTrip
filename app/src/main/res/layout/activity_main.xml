@@ -12,11 +12,11 @@
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:tabGravity="fill"
-        app:tabMode="fixed"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/settings_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabGravity="fill"
+        app:tabMode="fixed">
 
         <!-- Define tabs for Explore and Map -->
         <com.google.android.material.tabs.TabItem
@@ -33,19 +33,21 @@
     </com.google.android.material.tabs.TabLayout>
 
     <!-- Settings icon at the top right corner -->
+
+    <!-- RecyclerView or CardStackView to display attraction cards below the tabs -->
     <ImageButton
         android:id="@+id/settings_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginBottom="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Settings"
         android:src="@drawable/ic_settings"
         app:layout_constraintBottom_toTopOf="@+id/recyclerViewAttractions"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <!-- RecyclerView or CardStackView to display attraction cards below the tabs -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAttractions"
         android:layout_width="0dp"
