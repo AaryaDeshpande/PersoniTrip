@@ -37,11 +37,13 @@
         android:id="@+id/settings_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Settings"
         android:src="@drawable/ic_settings"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerViewAttractions"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="Settings" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- RecyclerView or CardStackView to display attraction cards below the tabs -->
     <androidx.recyclerview.widget.RecyclerView
@@ -49,11 +51,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:paddingTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"
         tools:listitem="@layout/item_attraction_card" /> <!-- Assume each card layout is defined in item_attraction_card.xml -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
