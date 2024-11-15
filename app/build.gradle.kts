@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    kotlin("kapt") // This line ensures annotation processing works for Room
 }
+
 
 android {
     namespace = "com.cs407.personitrip"
@@ -40,7 +42,7 @@ android {
 }
 
 dependencies {
-
+    // Existing dependencies
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -49,13 +51,18 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    // Add RecyclerView
     implementation(libs.androidx.recyclerview)
-
-    // Add ViewBinding
     implementation(libs.androidx.viewbinding)
 
+    implementation("androidx.room:room-runtime:2.5.0")
+    kapt("androidx.room:room-compiler:2.5.0")
+    implementation("androidx.room:room-ktx:2.5.0")
+
+    // Add Firebase Authentication and Firestore
+    implementation("com.google.firebase:firebase-auth:21.1.0")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.4.2")
+
     // Add CardStackView for swipe functionality
-    //implementation(libs.card.stack.view)
     implementation(libs.cardstackview)
 }
+
