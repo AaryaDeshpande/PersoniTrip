@@ -23,5 +23,6 @@
 
         <activity android:name=".MainActivity" />
         <activity android:name=".PersonalityQuizActivity" />
+        <activity android:name=".EditPreferencesActivity" />
     </application>
 </manifest>
