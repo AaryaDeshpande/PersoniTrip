@@ -17,6 +17,7 @@ class PersonalityQuizActivity : AppCompatActivity() {
     private val userPreferences = mutableListOf<String>() // List to store user's liked attractions.
     private val userDislikes = mutableListOf<String>() // List to store user's disliked attractions.
 
+    // :)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
