@@ -13,8 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -35,6 +37,22 @@ class MainActivity : AppCompatActivity() {
         val settingsButton = findViewById<ImageButton>(R.id.settings_button)
         settingsButton.setOnClickListener { showSettingsMenu(it) }
 
+        // Initialize TabLayout
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+        loadFragment(ExploreFragment()) // Default fragment
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> loadFragment(ExploreFragment())
+                    1 -> loadFragment(MapFragment())
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
         // Load preferences from SharedPreferences
         loadPreferencesFromSharedPrefs()
 
@@ -43,6 +61,13 @@ class MainActivity : AppCompatActivity() {
 
         // Check if location permission is granted, and request it if not.
         checkLocationPermission()
+    }
+
+    // Load fragments dynamically
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 
     // Function to show the dropdown menu
