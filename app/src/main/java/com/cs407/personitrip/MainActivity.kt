@@ -64,9 +64,9 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.menu_saved -> {
-                    // Open activity or fragment to view saved itinerary
-                    Toast.makeText(this, "View Saved Itinerary selected", Toast.LENGTH_SHORT).show()
+                R.id.menu_personality -> {
+                    val intent = Intent(this, EditItineraryActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
