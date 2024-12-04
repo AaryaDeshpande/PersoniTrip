@@ -24,5 +24,6 @@
         <activity android:name=".MainActivity" />
         <activity android:name=".PersonalityQuizActivity" />
         <activity android:name=".EditPreferencesActivity" />
+        <activity android:name=".EditItineraryActivity" />
     </application>
 </manifest>
