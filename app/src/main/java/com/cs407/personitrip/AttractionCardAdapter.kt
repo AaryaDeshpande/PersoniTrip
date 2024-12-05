@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.cs407.personitrip.databinding.ItemAttractionCardBinding
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
+import com.bumptech.glide.Glide
+
 
 // Adapter to manage and display attraction cards in a RecyclerView.
 class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
@@ -28,9 +30,20 @@ class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
     // Binds data to each card (ViewHolder) at the specified position.
     override fun onBindViewHolder(holder: AttractionViewHolder, position: Int) {
         val attraction = attractions[position]
-        // Set the title and image for each card using the data from AttractionCategory.
         holder.binding.attractionTitle.text = attraction.name
-        holder.binding.attractionImage.setImageResource(attraction.imageResourceId)
+
+        // Load image using Glide
+        val context = holder.binding.root.context
+        val photoUrl = attraction.photoReference?.let { getPhotoUrl(it) }
+        Glide.with(context)
+            .load(photoUrl ?: attraction.imageResourceId) // Use default image if no photoReference
+            .placeholder(R.drawable.default_attraction_image)
+            .into(holder.binding.attractionImage)
+    }
+
+    private fun getPhotoUrl(photoReference: String): String {
+        val apiKey = "YOUR_API_KEY"
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
     }
 
     // Returns the total number of items in the list of attractions.

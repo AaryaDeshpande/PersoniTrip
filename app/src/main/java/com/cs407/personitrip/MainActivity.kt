@@ -148,29 +148,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // Fetch nearby attractions using the Google Places API.
     private fun fetchNearbyAttractions(latitude: Double, longitude: Double) {
-        val apiKey = "AIzaSyANayAhfHcxjm34EIT8rwgHazhrzZxxRls" // Replace with your Google Places API key
+        val apiKey = "AIzaSyANayAhfHcxjm34EIT8rwgHazhrzZxxRls"
         val urlStr =
             "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=1500&type=tourist_attraction&key=$apiKey"
 
-        // Run the network request on a separate thread to prevent blocking the UI.
         Thread {
             try {
                 val url = URL(urlStr)
                 val connection = url.openConnection() as HttpURLConnection
                 connection.requestMethod = "GET"
 
-                // Read the response from the API request.
                 val response = connection.inputStream.bufferedReader().use { it.readText() }
                 val attractions = parseAttractionsFromJson(response)
 
-                // Update the UI with the filtered attractions.
                 runOnUiThread {
                     filterAttractionsByPreferences(attractions)
                 }
             } catch (e: Exception) {
-                // Handle any exceptions that occur and notify the user.
                 runOnUiThread {
                     Toast.makeText(this, "Failed to fetch attractions", Toast.LENGTH_SHORT).show()
                 }
@@ -186,12 +181,20 @@ class MainActivity : AppCompatActivity() {
 
         for (i in 0 until resultsArray.length()) {
             val result = resultsArray.getJSONObject(i)
-            val name = result.getString("name") // Extract attraction name
-            val imageResourceId = R.drawable.default_attraction_image // Placeholder image resource
-            attractions.add(AttractionCategory(name, imageResourceId))
+            val name = result.getString("name")
+            val photosArray = result.optJSONArray("photos")
+            val photoReference = photosArray?.getJSONObject(0)?.optString("photo_reference")
+            attractions.add(AttractionCategory(name, R.drawable.default_attraction_image, photoReference))
         }
         return attractions
     }
+
+    private fun getPhotoUrl(photoReference: String): String {
+        val apiKey = "AIzaSyANayAhfHcxjm34EIT8rwgHazhrzZxxRls"
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
+    }
+
+
 
     // Filter attractions based on user preferences and dislikes.
     private fun filterAttractionsByPreferences(attractions: List<AttractionCategory>) {
