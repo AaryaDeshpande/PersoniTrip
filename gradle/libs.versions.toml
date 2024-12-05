@@ -1,5 +1,5 @@
 [versions]
-agp = "8.6.0"
+agp = "8.7.2"
 cardStackView = "2.3.4"
 cardstackviewVersion = "2.3.4"
 kotlin = "1.9.0"
