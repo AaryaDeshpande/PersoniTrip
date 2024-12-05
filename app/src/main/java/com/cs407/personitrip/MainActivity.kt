@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_city -> {
-                    // Open activity or fragment to edit city
-                    Toast.makeText(this, "Edit City selected", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EditCityActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.menu_personality -> {
@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     true
                 }
-                R.id.menu_personality -> {
+                R.id.menu_saved -> {
                     val intent = Intent(this, EditItineraryActivity::class.java)
                     startActivity(intent)
                     true
