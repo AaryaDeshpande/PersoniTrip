@@ -1,20 +1,15 @@
 package com.cs407.personitrip
 
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.cs407.personitrip.databinding.FragmentMapBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
@@ -37,6 +32,23 @@ class MapFragment : Fragment() {
      */
     data class Loc(val coordinates: LatLng, val name: String)
 
+    /**
+     * This is a callback that is available when the map is prepared.
+     * It will parse the locations and maps added.
+     *
+     * PLACEHOLDER:
+     * There are 3 placeholder locations:
+     * 1. Picnic Point (43.0898, -89.4151)
+     * 2. Tenney Park (43.0960, -89.3752)
+     * 3. Camp Randall Stadium (43.0679, -89.4178)
+     * All of the locations are my favorite locations in Madtown.
+     *
+     * The expectation is that this fragment will be passed a set of locations at some point.
+     * TODO tags are added to complete that code.
+     * Markers are then added with the basic location name and basic location info.
+     *
+     * Then it will zoom to the last location with 10f zoom.
+     */
     private val callback = OnMapReadyCallback { googleMap ->
         // Map is now available.
         mMap = googleMap
@@ -73,16 +85,12 @@ class MapFragment : Fragment() {
         // start working on view
         val view = inflater.inflate(R.layout.fragment_map, container, false)
 
-        android.util.Log.d("MapFragment", "onCreateView crash") //todo rm
         // initialize mapview
         mapView = view.findViewById(R.id.map_frag_display)
         mapView?.onCreate(savedInstanceState)
-        mapView?.getMapAsync(callback)
-
-        checkShowUp() //todo rm
 
         // Create async map
-
+        mapView?.getMapAsync(callback)
 
         return view
     }
@@ -91,15 +99,6 @@ class MapFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 //        val mapFragment = childFragmentManager.findFragmentById(R.id.map_frag_display) as SupportMapFragment?
 //        mapFragment?.getMapAsync(callback)
-        checkShowUp()
-    }
-
-    /**
-     * Test that this fragment shows up.
-     */
-    fun checkShowUp() {
-        // Use a toast.
-        Toast.makeText(getActivity(), "MapFragment", Toast.LENGTH_SHORT).show();
     }
 
     override fun onResume() {
