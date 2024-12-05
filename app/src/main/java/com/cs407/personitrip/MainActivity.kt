@@ -2,6 +2,7 @@ package com.cs407.personitrip
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -13,8 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.tabs.TabLayout
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -35,6 +38,22 @@ class MainActivity : AppCompatActivity() {
         val settingsButton = findViewById<ImageButton>(R.id.settings_button)
         settingsButton.setOnClickListener { showSettingsMenu(it) }
 
+        // Initialize TabLayout
+        val tabLayout = findViewById<TabLayout>(R.id.tabLayout)
+        loadFragment(ExploreFragment()) // Default fragment
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                when (tab?.position) {
+                    0 -> loadFragment(ExploreFragment())
+                    1 -> loadFragment(MapFragment())
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
         // Load preferences from SharedPreferences
         loadPreferencesFromSharedPrefs()
 
@@ -43,6 +62,13 @@ class MainActivity : AppCompatActivity() {
 
         // Check if location permission is granted, and request it if not.
         checkLocationPermission()
+    }
+
+    // Load fragments dynamically
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 
     // Function to show the dropdown menu
@@ -54,18 +80,18 @@ class MainActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_city -> {
-                    // Open activity or fragment to edit city
-                    Toast.makeText(this, "Edit City selected", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EditCityActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.menu_personality -> {
-                    // Open activity or fragment to edit personality preferences
-                    Toast.makeText(this, "Edit Personality Preferences selected", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EditPreferencesActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.menu_saved -> {
-                    // Open activity or fragment to view saved itinerary
-                    Toast.makeText(this, "View Saved Itinerary selected", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EditItineraryActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
