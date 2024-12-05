@@ -2,6 +2,7 @@ package com.cs407.personitrip
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
@@ -79,18 +80,18 @@ class MainActivity : AppCompatActivity() {
         popup.setOnMenuItemClickListener { item ->
             when (item.itemId) {
                 R.id.menu_city -> {
-                    // Open activity or fragment to edit city
-                    Toast.makeText(this, "Edit City selected", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EditCityActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.menu_personality -> {
-                    // Open activity or fragment to edit personality preferences
-                    Toast.makeText(this, "Edit Personality Preferences selected", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EditPreferencesActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 R.id.menu_saved -> {
-                    // Open activity or fragment to view saved itinerary
-                    Toast.makeText(this, "View Saved Itinerary selected", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, EditItineraryActivity::class.java)
+                    startActivity(intent)
                     true
                 }
                 else -> false
