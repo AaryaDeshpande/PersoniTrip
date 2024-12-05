@@ -1,11 +1,14 @@
 package com.cs407.personitrip
 
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.cs407.personitrip.databinding.FragmentMapBinding
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -23,6 +26,7 @@ class MapFragment : Fragment() {
     private var mDestinationLatLngs: ArrayList<Loc> = ArrayList()
     private lateinit var mFusedLocationProviderClient: FusedLocationProviderClient
     private var mapView : MapView? = null
+    get() = field
 
     /**
      * The Loc object is the location, with the LatLng and the Location Name.
@@ -96,5 +100,25 @@ class MapFragment : Fragment() {
     fun checkShowUp() {
         // Use a toast.
         Toast.makeText(getActivity(), "MapFragment", Toast.LENGTH_SHORT).show();
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView?.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView?.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView?.onLowMemory()
     }
 }
