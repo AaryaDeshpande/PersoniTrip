@@ -36,7 +36,7 @@ class MapFragment : Fragment() {
      * This is a callback that is available when the map is prepared.
      * It will parse the locations and maps added.
      *
-     * PLACEHOLDER:
+     * TODO - NOTE for PLACEHOLDERs:
      * There are 3 placeholder locations:
      * 1. Picnic Point (43.0898, -89.4151)
      * 2. Tenney Park (43.0960, -89.3752)
@@ -54,7 +54,16 @@ class MapFragment : Fragment() {
         mMap = googleMap
 
         // code to display markers
-        //TODO this is a placeholder to add random locations around Madison... that I like... and have been to
+        /* TODO - NOTE for next programmer:
+        I have added placeholders to locations. These are my favorite locations in Madtown.
+        No, I do not plan on "gatekeeping" them - in fact, I would totally share them with others.
+        However, they may not be other's favorite locations
+
+        tl;dr - please remove the placeholders after verifying that other locations are added.
+
+        Thanks.
+        -dhdingwisc
+         */
         // Picnic Point (43.0898, -89.4151)
         val locPicnic = Loc(LatLng(43.0898, -89.4151), "Picnic Point")
         mDestinationLatLngs.add(locPicnic)
@@ -63,7 +72,16 @@ class MapFragment : Fragment() {
         // Camp Randall Stadium (43.0679, -89.4178)
         mDestinationLatLngs.add(Loc(LatLng(43.0679, -89.4178), "Camp Randall Stadium"))
 
-        // TODO However, code is necessary to add Loc items from selected locations from previous activities.
+        /* TODO - NOTE for next programmer:
+        Please add necessary programming to add the locations from explore tab (generated from the
+        planned implementation to find locations).
+        While adding necessary programming, please be cautious that locations may need to be added
+        to mDestinationLatLngs outside of the callback, but it has already been initialized as an
+        ArrayList so that it is hopefully easier to go through them.
+
+        Thanks.
+        -dhdingwisc
+         */
 
         // Loop through all locations in AL to add to the map.
         for (i in mDestinationLatLngs.indices) {
