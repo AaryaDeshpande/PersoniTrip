@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +20,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        val secretsFile = project.rootProject.file("secrets.properties")
+        if (secretsFile.exists()) {
+            properties.load(secretsFile.inputStream())
+        }
+        val mapsApiKey = properties.getProperty("MAPS_API_KEY") ?: ""
+
+        buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
     }
 
     buildTypes {
@@ -39,6 +50,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true // <- set this to true
     }
 }
 
@@ -72,6 +84,9 @@ dependencies {
 
     implementation ("com.github.bumptech.glide:glide:4.15.1")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.15.1")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.fragment:fragment-ktx:1.8.5")
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
