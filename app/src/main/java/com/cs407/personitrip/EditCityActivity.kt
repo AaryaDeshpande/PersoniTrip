@@ -24,7 +24,7 @@ class EditCityActivity : AppCompatActivity() {
         setContentView(R.layout.activity_edit_city)
 
         if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, "AIzaSyDzhqjQ3_S38NEgpiaaostZvJ1rYvAP5j8")
+            Places.initialize(applicationContext, BuildConfig.MAPS_API_KEY)
         }
 
         startAutocomplete()
