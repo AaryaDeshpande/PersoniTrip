@@ -42,7 +42,7 @@ class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
     }
 
     private fun getPhotoUrl(photoReference: String): String {
-        val apiKey = "YOUR_API_KEY"
+        val apiKey = "API_KEY" // TODO add API key
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
     }
 
