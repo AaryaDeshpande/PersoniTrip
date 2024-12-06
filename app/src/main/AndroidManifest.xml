@@ -14,10 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PersoniTrip">
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyDg7FNZpwiaN7Wv6zB5CH228JeKg4UiytQ" />
-
         <activity android:name=".auth.LoginActivity"
             android:exported="true">
             <intent-filter>
@@ -31,6 +27,7 @@
         <activity android:name=".PersonalityQuizActivity" />
         <activity android:name=".EditPreferencesActivity" />
         <activity android:name=".EditItineraryActivity" />
+        <activity android:name=".EditCityActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
