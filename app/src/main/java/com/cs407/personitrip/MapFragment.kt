@@ -1,5 +1,6 @@
 package com.cs407.personitrip
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -121,7 +122,18 @@ class MapFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        mapView?.onResume()
+
+        val sharedPrefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val cityName = sharedPrefs.getString("selectedCityName", null)
+        val cityLat = sharedPrefs.getString("selectedCityLat", null)?.toDoubleOrNull()
+        val cityLng = sharedPrefs.getString("selectedCityLng", null)?.toDoubleOrNull()
+
+        if (cityName != null && cityLat != null && cityLng != null) {
+            updateLocation(Loc(LatLng(cityLat, cityLng), cityName))
+        } else {
+            val defaultLocation = Loc(LatLng(43.0731, -89.4012), "Madison, WI")
+            updateLocation(defaultLocation)
+        }
     }
 
     override fun onPause() {
@@ -137,5 +149,18 @@ class MapFragment : Fragment() {
     override fun onLowMemory() {
         super.onLowMemory()
         mapView?.onLowMemory()
+    }
+    //update from settings
+    fun updateLocation(newLocation: Loc) {
+        mDestinationLatLngs.clear()
+        mDestinationLatLngs.add(newLocation)
+
+        mMap.clear()
+        mMap.addMarker(
+            MarkerOptions()
+                .position(newLocation.coordinates)
+                .title(newLocation.name)
+        )
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newLocation.coordinates, 10f))
     }
 }
