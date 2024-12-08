@@ -37,6 +37,9 @@ class AttractionCardAdapter(private var attractions: List<AttractionCategory>) :
         // Load image using Glide
         val context = holder.binding.root.context
         val photoUrl = attraction.photoReference?.let { getPhotoUrl(it) }
+
+        Log.d("AttractionCardAdapter", "Loading image for ${attraction.name}: $photoUrl")
+
         Glide.with(context)
             .load(photoUrl ?: attraction.imageResourceId) // Use default image if no photoReference
             .placeholder(R.drawable.default_attraction_image)
@@ -44,7 +47,7 @@ class AttractionCardAdapter(private var attractions: List<AttractionCategory>) :
     }
 
     private fun getPhotoUrl(photoReference: String): String {
-        val apiKey = "API_KEY" // TODO add API key
+        val apiKey = BuildConfig.MAPS_API_KEY // TODO add API key
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
     }
 
