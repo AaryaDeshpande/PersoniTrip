@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cs407.personitrip.AttractionCardAdapter
 import com.cs407.personitrip.AttractionCategory
@@ -46,6 +47,10 @@ class ExploreFragment : Fragment() {
     ): View? {
         val root = inflater.inflate(R.layout.fragment_explore, container, false)
         recyclerView = root.findViewById(R.id.recyclerViewAttractions)
+
+        // Set a LinearLayoutManager for the RecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
         recyclerView.adapter = AttractionCardAdapter(emptyList()) // Empty initially
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -57,10 +62,15 @@ class ExploreFragment : Fragment() {
     }
 
     private fun setupObservers() {
+        //val adapter = AttractionCardAdapter(emptyList())
+        //recyclerView.adapter = adapter
+
         exploreViewModel.attractions.observe(viewLifecycleOwner) { attractions ->
-            recyclerView.adapter = AttractionCardAdapter(attractions)
+            Log.d("ExploreFragment", "Observer triggered with attractions: ${attractions.size}")
+            (recyclerView.adapter as? AttractionCardAdapter)?.updateData(attractions) // Update the adapter's data
         }
     }
+
 
     private fun checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(
