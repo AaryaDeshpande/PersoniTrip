@@ -88,6 +88,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.fragment:fragment-ktx:1.8.5")
 
+    implementation("com.google.android.libraries.places:places:4.1.0")
+
+
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
 

@@ -16,8 +16,14 @@ import com.cs407.personitrip.AttractionCardAdapter
 import com.cs407.personitrip.AttractionCategory
 import com.cs407.personitrip.BuildConfig
 import com.cs407.personitrip.R
+import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.RectangularBounds
+import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -84,42 +90,56 @@ class ExploreFragment : Fragment() {
     }
 
     private fun fetchAttractionsFromGoogle(latitude: Double, longitude: Double) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val apiKey = BuildConfig.MAPS_API_KEY
-            val urlStr =
-                "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$latitude,$longitude&radius=1500&type=tourist_attraction&key=$apiKey"
+        // Initialize PlacesClient
+        val placesClient = Places.createClient(requireContext())
 
-            try {
-                val url = URL(urlStr)
-                val connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "GET"
+        // Create a RectangularBounds object for nearby places
+        val locationBias = RectangularBounds.newInstance(
+            LatLng(latitude - 0.01, longitude - 0.01), // Southwest corner
+            LatLng(latitude + 0.01, longitude + 0.01)  // Northeast corner
+        )
 
-                val responseCode = connection.responseCode
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    // Success: Read the response
-                    val response = connection.inputStream.bufferedReader().use { it.readText() }
-                    val attractions = parseAttractionsFromJson(response)
-                    val filteredAttractions = filterAttractionsByPreferences(attractions)
+        // Define the fields you want to retrieve
+        val request = FindCurrentPlaceRequest.newInstance(
+            listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.PHOTO_METADATAS)
+        )
 
-                    // Update the ViewModel
-                    exploreViewModel.updateAttractions(filteredAttractions)
-                } else {
-                    // Log the error response
-                    val errorStream = connection.errorStream?.bufferedReader()?.use { it.readText() }
-                    Log.e("ExploreFragment", "API Error: $responseCode, $errorStream")
-                    launch(Dispatchers.Main) {
-                        Toast.makeText(requireContext(), "Failed to fetch attractions", Toast.LENGTH_SHORT).show()
-                    }
+        // Call Places API to find current places
+        placesClient.findCurrentPlace(request).addOnSuccessListener { response ->
+            val attractions = mutableListOf<AttractionCategory>()
+
+            for (placeLikelihood in response.placeLikelihoods) {
+                val place = placeLikelihood.place
+                val name = place.name
+                val latLng = place.latLng
+
+                // Handle photo metadata (if available)
+                val photoReference = place.photoMetadatas?.firstOrNull()?.let { metadata ->
+                    metadata.attributions // Attribution details for displaying the image
+                    metadata // PhotoMetadata object
                 }
-            } catch (e: Exception) {
-                // Log any exceptions
-                Log.e("ExploreFragment", "Error fetching attractions: ${e.message}", e)
-                launch(Dispatchers.Main) {
-                    Toast.makeText(requireContext(), "Failed to fetch attractions", Toast.LENGTH_SHORT).show()
-                }
+
+                attractions.add(
+                    AttractionCategory(
+                        name = name ?: "Unknown",
+                        photoReference = photoReference?.toString() // Can be used later for Glide
+                    )
+                )
+            }
+
+            // Filter attractions by preferences
+            val filteredAttractions = filterAttractionsByPreferences(attractions)
+
+            // Update the ViewModel
+            exploreViewModel.updateAttractions(filteredAttractions)
+        }.addOnFailureListener { exception ->
+            if (exception is ApiException) {
+                val statusCode = exception.statusCode
+                Toast.makeText(requireContext(), "Failed to fetch places: $statusCode", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 
     private fun parseAttractionsFromJson(json: String): List<AttractionCategory> {
         val attractions = mutableListOf<AttractionCategory>()
@@ -143,13 +163,18 @@ class ExploreFragment : Fragment() {
     }
 
     private fun filterAttractionsByPreferences(attractions: List<AttractionCategory>): List<AttractionCategory> {
-        val sharedPrefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val userPreferences = sharedPrefs.getStringSet("userPreferences", setOf()) ?: setOf()
-        val userDislikes = sharedPrefs.getStringSet("userDislikes", setOf()) ?: setOf()
-
-        return attractions.filter { attraction ->
-            userPreferences.any { like -> attraction.name.contains(like, ignoreCase = true) } &&
-                    userDislikes.none { dislike -> attraction.name.contains(dislike, ignoreCase = true) }
-        }
+        // Simply return the input list without applying any filtering.
+        return attractions
     }
+
+//    private fun filterAttractionsByPreferences(attractions: List<AttractionCategory>): List<AttractionCategory> {
+//        val sharedPrefs = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//        val userPreferences = sharedPrefs.getStringSet("userPreferences", setOf()) ?: setOf()
+//        val userDislikes = sharedPrefs.getStringSet("userDislikes", setOf()) ?: setOf()
+//
+//        return attractions.filter { attraction ->
+//            userPreferences.any { like -> attraction.name.contains(like, ignoreCase = true) } &&
+//                    userDislikes.none { dislike -> attraction.name.contains(dislike, ignoreCase = true) }
+//        }
+//    }
 }
