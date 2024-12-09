@@ -1,5 +1,6 @@
 package com.cs407.personitrip
 
+import ExploreViewModel
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -7,15 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MarkerOptions
 
 class MapFragment : Fragment() {
+    private val exploreViewModel: ExploreViewModel by activityViewModels()
 
     // Map variables for map values.
     private lateinit var mMap: GoogleMap
@@ -52,6 +57,7 @@ class MapFragment : Fragment() {
      * Then it will zoom to the last location with 10f zoom.
      */
     private val callback = OnMapReadyCallback { googleMap ->
+        Log.d("MapFragment", "onMapReady called")
         // Map is now available.
         mMap = googleMap
 
@@ -131,6 +137,39 @@ class MapFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        exploreViewModel.locations.observe(viewLifecycleOwner) { locations ->
+            Log.d("MapFragment", "Received locations: $locations")
+            if (::mMap.isInitialized) {
+                // Clear existing markers
+                mMap.clear()
+
+                // Add new markers
+                locations.forEach { latLng ->
+                    mMap.addMarker(
+                        MarkerOptions()
+                            .position(latLng)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                    )
+                }
+
+                // Zoom to fit all markers if there are any
+                if (locations.isNotEmpty()) {
+                    val builder = LatLngBounds.Builder()
+                    locations.forEach { builder.include(it) }
+                    val bounds = builder.build()
+
+                    try {
+                        val padding = 100 // pixels
+                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, padding)
+                        mMap.animateCamera(cameraUpdate)
+                    } catch (e: Exception) {
+                        Log.e("MapFragment", "Error animating camera: ${e.message}")
+                    }
+                } else {
+                    Log.e("MapFragment", "Map not initialized yet")
+                }
+            }
+        }
 //        val mapFragment = childFragmentManager.findFragmentById(R.id.map_frag_display) as SupportMapFragment?
 //        mapFragment?.getMapAsync(callback)
     }
