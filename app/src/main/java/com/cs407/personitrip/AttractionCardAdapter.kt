@@ -1,5 +1,6 @@
 package com.cs407.personitrip
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,7 @@ import com.bumptech.glide.Glide
 
 
 // Adapter to manage and display attraction cards in a RecyclerView.
-class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
+class AttractionCardAdapter(private var attractions: List<AttractionCategory>) :
     RecyclerView.Adapter<AttractionCardAdapter.AttractionViewHolder>() {
 
     // ViewHolder that holds the layout for each card in the RecyclerView.
@@ -30,11 +31,15 @@ class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
     // Binds data to each card (ViewHolder) at the specified position.
     override fun onBindViewHolder(holder: AttractionViewHolder, position: Int) {
         val attraction = attractions[position]
+        Log.d("AttractionCardAdapter", "Binding data for position $position: ${attraction.name}")
         holder.binding.attractionTitle.text = attraction.name
 
         // Load image using Glide
         val context = holder.binding.root.context
         val photoUrl = attraction.photoReference?.let { getPhotoUrl(it) }
+
+        Log.d("AttractionCardAdapter", "Loading image for ${attraction.name}: $photoUrl")
+
         Glide.with(context)
             .load(photoUrl ?: attraction.imageResourceId) // Use default image if no photoReference
             .placeholder(R.drawable.default_attraction_image)
@@ -42,7 +47,7 @@ class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
     }
 
     private fun getPhotoUrl(photoReference: String): String {
-        val apiKey = "YOUR_API_KEY"
+        val apiKey = BuildConfig.MAPS_API_KEY // TODO add API key
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
     }
 
@@ -58,5 +63,11 @@ class AttractionCardAdapter(private val attractions: List<AttractionCategory>) :
     // AttractionCardAdapter.kt
     fun getAttractionAt(position: Int): AttractionCategory {
         return attractions[position] // Return the card at the given position
+    }
+
+    fun updateData(newAttractions: List<AttractionCategory>) {
+        Log.d("AttractionCardAdapter", "Updating data with ${newAttractions.size} attractions")
+        attractions = newAttractions
+        notifyDataSetChanged() // Notify the adapter that the data has changed
     }
 }

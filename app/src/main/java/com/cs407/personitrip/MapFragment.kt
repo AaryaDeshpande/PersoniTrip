@@ -2,6 +2,7 @@ package com.cs407.personitrip
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,6 +85,19 @@ class MapFragment : Fragment() {
         -dhdingwisc
          */
 
+        Log.d("MapFragment", "callback - getting shared prefs.")
+        val sharedPrefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val cityName = sharedPrefs.getString("selectedCityName", null)
+        val cityLat = sharedPrefs.getString("selectedCityLat", null)?.toDoubleOrNull()
+        val cityLng = sharedPrefs.getString("selectedCityLng", null)?.toDoubleOrNull()
+
+        if (cityName != null && cityLat != null && cityLng != null) {
+            updateLocation(Loc(LatLng(cityLat, cityLng), cityName))
+        } else {
+            val defaultLocation = Loc(LatLng(43.0731, -89.4012), "Madison, WI")
+            updateLocation(defaultLocation)
+        }
+
         // Loop through all locations in AL to add to the map.
         for (i in mDestinationLatLngs.indices) {
             mMap.addMarker(
@@ -101,6 +115,7 @@ class MapFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("MapFragment", "onCreateView")
         // start working on view
         val view = inflater.inflate(R.layout.fragment_map, container, false)
 
@@ -120,7 +135,9 @@ class MapFragment : Fragment() {
 //        mapFragment?.getMapAsync(callback)
     }
 
+    // Caution: do not modify.
     override fun onResume() {
+        Log.d("MapFragment", "onResume")
         super.onResume()
 
         val sharedPrefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)

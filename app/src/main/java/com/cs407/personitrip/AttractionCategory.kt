@@ -6,7 +6,7 @@ import android.os.Parcelable
 // Data class representing an attraction category with name and image resource ID.
 data class AttractionCategory(
     val name: String,
-    val imageResourceId: Int, // Default image resource ID
+    val imageResourceId: Int = R.drawable.default_attraction_image, // Default image resource ID
     val photoReference: String? = null // New field for dynamic photo reference
 ) : Parcelable {
     // Parcelable implementation for inter-activity transfer.
@@ -14,6 +14,13 @@ data class AttractionCategory(
         parcel.readString() ?: "",
         parcel.readInt(),
         parcel.readString()
+    )
+
+    // New secondary constructor for cases where no image resource ID is needed
+    constructor(name: String, photoReference: String?) : this(
+        name = name,
+        imageResourceId = R.drawable.default_attraction_image, // Default placeholder
+        photoReference = photoReference
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
