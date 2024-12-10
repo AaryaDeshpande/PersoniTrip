@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
+import com.google.android.libraries.places.api.net.FetchPhotoRequest
 
 
 class ExploreFragment : Fragment() {
@@ -123,16 +124,12 @@ class ExploreFragment : Fragment() {
                 val name = place.name
                 val latLng = place.latLng
 
-                // Handle photo metadata (if available)
-                val photoReference = place.photoMetadatas?.firstOrNull()?.let { metadata ->
-                    metadata.attributions // Attribution details for displaying the image
-                    metadata // PhotoMetadata object
-                }
+                val photoReference = place.photoMetadatas?.firstOrNull()?.toString()
 
                 attractions.add(
                     AttractionCategory(
                         name = name ?: "Unknown",
-                        photoReference = photoReference?.toString(), // Can be used later for Glide
+                        photoReference = photoReference,
                         location = latLng
                     )
                 )

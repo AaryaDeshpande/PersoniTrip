@@ -46,9 +46,22 @@ class AttractionCardAdapter(private var attractions: List<AttractionCategory>) :
             .into(holder.binding.attractionImage)
     }
 
-    private fun getPhotoUrl(photoReference: String): String {
-        val apiKey = BuildConfig.MAPS_API_KEY // TODO add API key
-        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
+//    private fun getPhotoUrl(photoReference: String): String {
+//        val apiKey = BuildConfig.MAPS_API_KEY // TODO add API key
+//        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=$photoReference&key=$apiKey"
+//    }
+
+    private fun getPhotoUrl(photoMetadata: String): String {
+        val apiKey = BuildConfig.MAPS_API_KEY
+        // Extract the photo reference from the metadata string
+        val regex = "photoReference=([^,}]+)".toRegex()
+        val photoReference = regex.find(photoMetadata)?.groupValues?.get(1)
+
+        return if (photoReference != null) {
+            "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=$photoReference&key=$apiKey"
+        } else {
+            "" // Return empty string if no photo reference found
+        }
     }
 
     // Returns the total number of items in the list of attractions.
