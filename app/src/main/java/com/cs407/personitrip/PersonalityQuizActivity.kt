@@ -54,7 +54,7 @@ class PersonalityQuizActivity : AppCompatActivity() {
         })
 
         // Set up the adapter for the CardStackView.
-        adapter = AttractionCardAdapter(getAttractionCategories())
+        adapter = AttractionCardAdapter(getAttractionCategories(), false)
         binding.cardStackView.layoutManager = manager
         binding.cardStackView.adapter = adapter
     }
