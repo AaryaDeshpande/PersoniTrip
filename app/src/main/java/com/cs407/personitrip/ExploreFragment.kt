@@ -52,7 +52,7 @@ class ExploreFragment : Fragment() {
         // Set a LinearLayoutManager for the RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        recyclerView.adapter = AttractionCardAdapter(emptyList()) // Empty initially
+        recyclerView.adapter = AttractionCardAdapter(emptyList(), true) // Empty initially
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         setupObservers()

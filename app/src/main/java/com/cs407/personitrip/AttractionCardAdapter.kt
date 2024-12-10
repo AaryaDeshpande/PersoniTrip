@@ -1,8 +1,11 @@
 package com.cs407.personitrip
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.cs407.personitrip.databinding.ItemAttractionCardBinding
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
@@ -10,7 +13,8 @@ import com.bumptech.glide.Glide
 
 
 // Adapter to manage and display attraction cards in a RecyclerView.
-class AttractionCardAdapter(private var attractions: List<AttractionCategory>) :
+class AttractionCardAdapter(private var attractions: List<AttractionCategory>,
+                            private val isExploreFragment: Boolean) :
     RecyclerView.Adapter<AttractionCardAdapter.AttractionViewHolder>() {
 
     // ViewHolder that holds the layout for each card in the RecyclerView.
@@ -44,6 +48,15 @@ class AttractionCardAdapter(private var attractions: List<AttractionCategory>) :
             .load(photoUrl ?: attraction.imageResourceId) // Use default image if no photoReference
             .placeholder(R.drawable.default_attraction_image)
             .into(holder.binding.attractionImage)
+
+        if (isExploreFragment) {
+            holder.binding.addToItineraryButton.visibility = View.VISIBLE
+            holder.binding.addToItineraryButton.setOnClickListener {
+                addAttractionToItinerary(attraction.name, context)
+            }
+        } else {
+            holder.binding.addToItineraryButton.visibility = View.GONE
+        }
     }
 
 //    private fun getPhotoUrl(photoReference: String): String {
@@ -82,5 +95,15 @@ class AttractionCardAdapter(private var attractions: List<AttractionCategory>) :
         Log.d("AttractionCardAdapter", "Updating data with ${newAttractions.size} attractions")
         attractions = newAttractions
         notifyDataSetChanged() // Notify the adapter that the data has changed
+    }
+    //add to itinerary in sharedpreferences
+    private fun addAttractionToItinerary(attractionName: String, context: Context) {
+        val sharedPrefs = context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val savedItinerary = sharedPrefs.getStringSet("savedItinerary", mutableSetOf())?.toMutableSet()
+        savedItinerary?.add(attractionName)
+
+        sharedPrefs.edit().putStringSet("savedItinerary", savedItinerary).apply()
+
+        Toast.makeText(context, "$attractionName added to itinerary", Toast.LENGTH_SHORT).show()
     }
 }
