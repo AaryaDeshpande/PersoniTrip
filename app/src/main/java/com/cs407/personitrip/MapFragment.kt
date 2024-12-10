@@ -182,17 +182,17 @@ class MapFragment : Fragment() {
         Log.d("MapFragment", "onResume")
         super.onResume()
 
-        val sharedPrefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val cityName = sharedPrefs.getString("selectedCityName", null)
-        val cityLat = sharedPrefs.getString("selectedCityLat", null)?.toDoubleOrNull()
-        val cityLng = sharedPrefs.getString("selectedCityLng", null)?.toDoubleOrNull()
-
-        if (cityName != null && cityLat != null && cityLng != null) {
-            updateLocation(Loc(LatLng(cityLat, cityLng), cityName))
-        } else {
-            val defaultLocation = Loc(LatLng(43.0731, -89.4012), "Madison, WI")
-            updateLocation(defaultLocation)
-        }
+//        val sharedPrefs = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+//        val cityName = sharedPrefs.getString("selectedCityName", null)
+//        val cityLat = sharedPrefs.getString("selectedCityLat", null)?.toDoubleOrNull()
+//        val cityLng = sharedPrefs.getString("selectedCityLng", null)?.toDoubleOrNull()
+//
+//        if (cityName != null && cityLat != null && cityLng != null) {
+//            updateLocation(Loc(LatLng(cityLat, cityLng), cityName))
+//        } else {
+//            val defaultLocation = Loc(LatLng(43.0731, -89.4012), "Madison, WI")
+//            updateLocation(defaultLocation)
+//        }
     }
 
     override fun onPause() {

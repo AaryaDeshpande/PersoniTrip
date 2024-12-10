@@ -9,6 +9,7 @@
 /.idea/assetWizardSettings.xml
 /.idea/deviceManager.xml
 /.idea/deploymentTargetSelector.xml
+google-services.json
 
 .DS_Store
 /build
