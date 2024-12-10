@@ -2,12 +2,14 @@ package com.cs407.personitrip
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.android.gms.maps.model.LatLng
 
 // Data class representing an attraction category with name and image resource ID.
 data class AttractionCategory(
     val name: String,
     val imageResourceId: Int = R.drawable.default_attraction_image, // Default image resource ID
-    val photoReference: String? = null // New field for dynamic photo reference
+    val photoReference: String? = null, // New field for dynamic photo reference
+    val location: LatLng? = null  // Add this field
 ) : Parcelable {
     // Parcelable implementation for inter-activity transfer.
     constructor(parcel: Parcel) : this(

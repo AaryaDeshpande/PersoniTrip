@@ -132,7 +132,8 @@ class ExploreFragment : Fragment() {
                 attractions.add(
                     AttractionCategory(
                         name = name ?: "Unknown",
-                        photoReference = photoReference?.toString() // Can be used later for Glide
+                        photoReference = photoReference?.toString(), // Can be used later for Glide
+                        location = latLng
                     )
                 )
             }
