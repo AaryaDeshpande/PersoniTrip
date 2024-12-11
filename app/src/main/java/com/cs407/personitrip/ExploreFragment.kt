@@ -95,8 +95,10 @@ class ExploreFragment : Fragment() {
                 val longitude = location.longitude
                 fetchAttractionsFromGoogle(latitude, longitude)
             } else {
-                Toast.makeText(requireContext(), "Unable to fetch location", Toast.LENGTH_SHORT).show()
-            }
+                val madisonLatitude = 43.0731
+                val madisonLongitude = -89.4012
+                Toast.makeText(requireContext(), "Unable to fetch location, using default location (Madison, WI)", Toast.LENGTH_SHORT).show()
+                fetchAttractionsFromGoogle(madisonLatitude, madisonLongitude)            }
         }
     }
 
